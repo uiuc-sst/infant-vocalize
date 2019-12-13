@@ -25,24 +25,18 @@ def plotconf(arr, xlab=None, ylab=None, title=None):
     #             if c > 0:
     #                 plt.text(j - .2, i + .2, c, fontsize=14)
 
-
     res = ax.imshow(array(norm_conf), cmap=cm.jet, interpolation='nearest')
     cb = fig.colorbar(res)
-
     if xlab is not None:
         plt.xticks(range(len(arr[0])))
         ax.set_xticklabels(xlab)
     if ylab is not None:
         plt.yticks(range(len(arr)))
         ax.set_yticklabels(ylab)
-
     if title is not None:
         plt.title(title)
     return plt
-
-
     #savefig("confmat.png", format="png")
-
 
 if __name__ == "__main__":
     conf_arr = [[33, 2, 0, 0, 0, 0, 0, 0, 0, 1, 3], [3, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 4, 41, 0, 0, 0, 0, 0, 0, 0, 1],

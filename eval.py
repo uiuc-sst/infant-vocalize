@@ -8,7 +8,7 @@ python eval.py \
 --prosody_or_fbank='fbank'
 """
 
-# changed map, logits csv store, accuracy calculations 
+# changed map, logits csv store, accuracy calculations
 
 import os
 from tensorflow import logging
@@ -16,8 +16,8 @@ import tensorflow as tf
 import read_data
 import pdb
 import CNNmodel
-import nets 
-import csv 
+import nets
+import csv
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,13 +25,11 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
 import itertools
 
-
 flags = tf.app.flags
-
 flags.DEFINE_string(
     'filenames', None,
     'Path to *tfrecord') # 'tfrecords/output001.wav.tfrecord'
-flags.DEFINE_integer("batch_size", 1, #each example has 100 frames -> 10x100 frame examples 
+flags.DEFINE_integer("batch_size", 1, #each example has 100 frames -> 10x100 frame examples
                    "How many examples to process per batch for training.")
 flags.DEFINE_integer("num_epochs", 1,
                    "How many examples to process per batch for training.")
@@ -50,7 +48,6 @@ flags.DEFINE_string(
 flags.DEFINE_string(
     'prosody_or_fbank', None,
     'Choose the feature type')
-
 FLAGS = flags.FLAGS
 
 def map(string_label):
@@ -59,9 +56,9 @@ def map(string_label):
   if string_label==2: return 'LAU'
   if string_label==3: return 'BAB'
   if string_label==4: return 'HIC'
-  else: return 
+  else: return
 
-# # number of cases, number of correctly classified 
+# # number of cases, number of correctly classified
 # miss = {'CRY':{'CRY':0,'FUS':0,'LAU':0,'BAB':0},'FUS':{'CRY':0,'FUS':0,'LAU':0,'BAB':0},'LAU':{'CRY':0,'FUS':0,'LAU':0,'BAB':0},'BAB':{'CRY':0,'FUS':0,'LAU':0,'BAB':0}}
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -76,7 +73,6 @@ def plot_confusion_matrix(cm, classes,
         print("Normalized confusion matrix")
     else:
         print('Confusion matrix, without normalization')
-
     print(cm)
 
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -92,38 +88,28 @@ def plot_confusion_matrix(cm, classes,
         plt.text(j, i, format(cm[i, j], fmt),
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
-
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-
 def main(_):
-
   # Logging the version.
   logging.set_verbosity(tf.logging.INFO)
-  
   if FLAGS.filenames:
   	filenames= FLAGS.filenames
   if FLAGS.batch_size:
   	batch_size= FLAGS.batch_size
   if FLAGS.num_epochs:
   	num_epochs= FLAGS.num_epochs
-
   # Load data placeholders of [batch_size, 100, 64]
-  images, labels, filename = read_data.loadembeddingtest(filenames, batch_size=batch_size, num_epochs=num_epochs, feature_type=FLAGS.prosody_or_fbank) 
-
-  # Number of test data 
+  images, labels, filename = read_data.loadembeddingtest(filenames, batch_size=batch_size, num_epochs=num_epochs, feature_type=FLAGS.prosody_or_fbank)
+  # Number of test data
   # CHN_test_files = FLAGS.CHN_test_files
-
   #1-fold test0: ~500
-
   test_data_num = sum(1 for _ in tf.python_io.tf_record_iterator(filenames))
-
   #500 #12768-1326 #len(os.listdir(CHN_test_files.split('/')[0]))
-
   correct=0
-  # build model graph 
+  # build model graph
   model = CNNmodel.CNNmodel(inputs=images,labels=labels,num_classes=FLAGS.num_classes,is_train=False, feature_type=FLAGS.prosody_or_fbank)
   saver = tf.train.Saver(tf.global_variables())
 
@@ -131,19 +117,17 @@ def main(_):
     latest_checkpoint = tf.train.latest_checkpoint(FLAGS.ckptdir)
     saver.restore(sess, latest_checkpoint)
     sess.run([tf.local_variables_initializer()])
-
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
-
     lab_array = []
     pred_array = []
     with open('5label4.csv', 'wb') as csvfile:
       csvfile.write('total_filename,filename,start_time,end_time,true_label,prediction,logits0,logits1,logits2,logits3,logits4')
       csvfile.write('\n')
       for i in xrange(test_data_num): # for each batch
-        img, lab, filena, pred, logits = sess.run([images, labels, filename, model._predictions, model._logits]) 
+        img, lab, filena, pred, logits = sess.run([images, labels, filename, model._predictions, model._logits])
         # pdb.set_trace()
-        # miss[map(lab)][map(pred)]+=1        
+        # miss[map(lab)][map(pred)]+=1
         start_time = filena.split('-')[-3]
         end_time = filena.split('-')[-2]
         name = filena.split('-')[0]
@@ -157,27 +141,19 @@ def main(_):
         pred_array.append(pred[0])
       coord.request_stop()
       coord.join(threads)
-
-
     lab_array=np.array(lab_array)
     pred_array=np.array(pred_array)
-
     Fscore = f1_score(lab_array, pred_array,average='macro')
     Accuracy = sum(lab_array==pred_array)*1.0/test_data_num
     print('F-score:',Fscore)
     print('Accuracy:',Accuracy)
-
     # cnf_matrix = confusion_matrix(lab_array, pred_array)
     # class_names = ['CRY','FUS','LAU','BAB']
-
     # np.set_printoptions(precision=2)
     # plt.figure()
     # plot_confusion_matrix(cnf_matrix, classes=class_names,
     #                       title='Confusion matrix of 4-way CNN on tokens coded by two labelers')
-
     # plt.show()
-
-
 
 if __name__ == '__main__':
   tf.app.run()

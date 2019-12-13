@@ -1,7 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.datasets import load_iris
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
-import pdb 
+import pdb
 import tensorflow as tf
 import numpy as np
 from sklearn.datasets import load_boston
@@ -40,8 +40,6 @@ flags.DEFINE_integer(
     'How many features in tfrecord')
 FLAGS = flags.FLAGS
 
-
-
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
@@ -57,7 +55,6 @@ def plot_confusion_matrix(cm, classes,
         print('Confusion matrix, without normalization')
 
     print(cm)
-
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -71,19 +68,15 @@ def plot_confusion_matrix(cm, classes,
         plt.text(j, i, format(cm[i, j], fmt),
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
-
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-
-# load data 
+# load data
 data_path = FLAGS.TF_RECORDS_DIR #'/Users/yijiaxu/Desktop/prosody_AED/features_to_be_selected/train.tfrecord'
 balanced_train_path = FLAGS.CHN_DATASET_DIR
 train_data_num = len(os.listdir(balanced_train_path.split('/')[0]))
-
 batch_size = train_data_num-1
-
 with tf.Session() as sess:
 	filename_queue = tf.train.string_input_producer(
         [data_path], num_epochs=1)
@@ -98,7 +91,7 @@ with tf.Session() as sess:
         	},
         )
 	image = tf.decode_raw(features['data'], tf.float32)
-	image = tf.reshape(image, [FLAGS.NUM_FEATURES]) 
+	image = tf.reshape(image, [FLAGS.NUM_FEATURES])
 	label = tf.decode_raw(features['label'], tf.int64)
   	label = label[0]
 	filename = features['filename']
@@ -108,9 +101,7 @@ with tf.Session() as sess:
 	sess.run(init_op)
 	coord = tf.train.Coordinator()
 	threads = tf.train.start_queue_runners(coord=coord)
-
 	img, lbl = sess.run([images, labels])
-
 # pdb.set_trace()
 
 # for reliability balance:
@@ -128,11 +119,9 @@ newy[120:180]=2
 newy[180:240]=1
 newy[240:300]=0
 
-
-# 5-way 
+# 5-way
 X = newx #img
 y = newy #lbl
-
 
 # 4-way
 # X = X[y!=4]
@@ -146,13 +135,10 @@ y = newy #lbl
 # y[y==1] = 0
 
 # non-reliability
-# X = np.concatenate((X[y==0][:int(len(X[y==0])/2)],X[y!=0]),axis=0) 
+# X = np.concatenate((X[y==0][:int(len(X[y==0])/2)],X[y!=0]),axis=0)
 # y = np.concatenate((y[y==0][:int(len(y[y==0])/2)],y[y!=0]),axis=0)
 
-
-
 lr =  LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,solver='svd', store_covariance=False, tol=0.0001)
-
 y_pred_list = []
 y_test_list = []
 average_accuracy = 0
@@ -174,18 +160,13 @@ average_Fscore/=5
 print "average_accuracy:",average_accuracy
 print "average_Fscore:",average_Fscore
 
-
 cnf_matrix = confusion_matrix(y_test_list, y_pred_list)
-
 class_names = ['CRY','FUS','LAU','BAB']
 
 np.set_printoptions(precision=2)
 plt.figure()
 plot_confusion_matrix(cnf_matrix, classes=class_names,
                       title='Confusion matrix of 5-way LDA on tokens coded by two labelers')
-
 plt.show()
-
 pdb.set_trace()
-
 np.save('results_npy/cnf_matrix_23_reliability_5way',cnf_matrix)

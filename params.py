@@ -39,14 +39,11 @@ INIT_STDDEV = 0.01  # Standard deviation used to initialize weights.
 LEARNING_RATE = 1e-3  # Learning rate for the Adam optimizer.
 ADAM_EPSILON = 1e-8  # Epsilon for the Adam optimizer.
 
-
-
 # Parameters used for embedding postprocessing.
 PCA_EIGEN_VECTORS_NAME = 'pca_eigen_vectors'
 PCA_MEANS_NAME = 'pca_means'
 QUANTIZE_MIN_VAL = -2.0
 QUANTIZE_MAX_VAL = +2.0
-
 
 # Names of ops, tensors, and features.
 INPUT_OP_NAME = 'vggish/input_features'
@@ -55,8 +52,6 @@ OUTPUT_OP_NAME = 'vggish/embedding'
 OUTPUT_TENSOR_NAME = OUTPUT_OP_NAME + ':0'
 AUDIO_EMBEDDING_FEATURE_NAME = 'audio_embedding'
 
-
-
-# prosofy
+# prosody
 NUM_FEATURES = 22
-NUM_FEATURE_SINGLE = 1 #change it to the same as NUM_FEATURES when using the original dataset 
+NUM_FEATURE_SINGLE = 1 #change it to the same as NUM_FEATURES when using the original dataset
