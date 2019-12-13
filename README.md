@@ -1,7 +1,7 @@
 Classify infant vocalizations as
 babble, cry, fuss, laugh, hic.
 
-Author: Yijia Xu <yijia.xu11@gmail.com>, 2017
+Author: Yijia Xu <yijia.xu11@gmail.com> https://github.com/orgs/uiuc-sst/people/yijiaxu3, 2017
 
 The best classifier was a pretty simple architecture:
 linear discriminant analysis, applied to a vector of OpenSmile features.
