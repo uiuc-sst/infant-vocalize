@@ -32,98 +32,98 @@ flags.DEFINE_bool(
 FLAGS = flags.FLAGS
 
 def map(string_label):
-  if string_label=='CRY': return 0
-  if string_label=='FUS': return 1
-  if string_label=='LAU': return 2
-  if string_label=='BAB': return 3
-  if string_label=='HIC': return 4
-  else: return
+    if string_label=='CRY': return 0
+    if string_label=='FUS': return 1
+    if string_label=='LAU': return 2
+    if string_label=='BAB': return 3
+    if string_label=='HIC': return 4
+    else: return
 
 def _int64_feature(value):
-  return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
 def _bytes_feature(value):
-  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 if not os.path.exists(FLAGS.tfrecord_file_dir):
-  os.makedirs(FLAGS.tfrecord_file_dir)
+    os.makedirs(FLAGS.tfrecord_file_dir)
 
 if FLAGS.train:
-  files = np.array(glob.glob(FLAGS.CHN_segment_dir+"*.wav"))
-  kf = KFold(n_splits=5, shuffle=True)
-  count = 0
-  for train_index, test_index in kf.split(files):
-    train_files, test_files = files[train_index], files[test_index]
-    # train
-    writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'train'+str(count)+'.tfrecord')
-    for file in train_files:
-      filename_list = (file.split('.wav')[0]).split('-')
+    files = np.array(glob.glob(FLAGS.CHN_segment_dir+"*.wav"))
+    kf = KFold(n_splits=5, shuffle=True)
+    count = 0
+    for train_index, test_index in kf.split(files):
+        train_files, test_files = files[train_index], files[test_index]
+        # train
+        writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'train'+str(count)+'.tfrecord')
+        for file in train_files:
+            filename_list = (file.split('.wav')[0]).split('-')
 
-      # minor modifications
-      # if filename_list[3]=='HIC':
-      #   continue
-      examples_batch = wav_to_spectro.wavfile_to_examples(file)
-      # pdb.set_trace()
-      if examples_batch.shape[0]!=0:
-        label_batch = []
-        label_batch.append(map(filename_list[3]))
-        labels = np.array(label_batch)
-        for image_idx,image in enumerate(examples_batch):
-          image=image.astype("float32")
-          feature = {'data': _bytes_feature((image.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
-          example = tf.train.Example(features=tf.train.Features(feature=feature))
-          writer.write(example.SerializeToString())
-    writer.close()
+            # minor modifications
+            # if filename_list[3]=='HIC':
+            #     continue
+            examples_batch = wav_to_spectro.wavfile_to_examples(file)
+            # pdb.set_trace()
+            if examples_batch.shape[0]!=0:
+                label_batch = []
+                label_batch.append(map(filename_list[3]))
+                labels = np.array(label_batch)
+                for image_idx,image in enumerate(examples_batch):
+                    image=image.astype("float32")
+                    feature = {'data': _bytes_feature((image.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
+                    example = tf.train.Example(features=tf.train.Features(feature=feature))
+                    writer.write(example.SerializeToString())
+        writer.close()
 
-    # test
-    writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+str(count)+'.tfrecord')
-    for file in test_files:
-      examples_batch = wav_to_spectro.wavfile_to_examples(file)
-      filename_list = (file.split('.wav')[0]).split('-')
-      # minor modifications
-      # if filename_list[3]=='HIC':
-      #   continue
-      if examples_batch.shape[0]!=0:
-        label_batch = []
-        label_batch.append(map(filename_list[3]))
-        labels = np.array(label_batch)
-        examples_batch=examples_batch.astype("float32")
-        feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
-        example = tf.train.Example(features=tf.train.Features(feature=feature))
-        writer.write(example.SerializeToString())
-    writer.close()
-    count+=1
+        # test
+        writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+str(count)+'.tfrecord')
+        for file in test_files:
+            examples_batch = wav_to_spectro.wavfile_to_examples(file)
+            filename_list = (file.split('.wav')[0]).split('-')
+            # minor modifications
+            # if filename_list[3]=='HIC':
+            #   continue
+            if examples_batch.shape[0]!=0:
+                label_batch = []
+                label_batch.append(map(filename_list[3]))
+                labels = np.array(label_batch)
+                examples_batch=examples_batch.astype("float32")
+                feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
+                example = tf.train.Example(features=tf.train.Features(feature=feature))
+                writer.write(example.SerializeToString())
+        writer.close()
+        count+=1
 
 if not FLAGS.train: # in this typical case, generate all the files for HMM probability use
-  files = np.array(glob.glob(FLAGS.CHN_segment_dir+"*.wav"))
+    files = np.array(glob.glob(FLAGS.CHN_segment_dir+"*.wav"))
 
-  writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+'.tfrecord')
-  for file in files:
-    examples_batch = wav_to_spectro.wavfile_to_examples(file)
-    filename_list = (file.split('.wav')[0]).split('-')
-    # minor modifications
-    if filename_list[3]=='HIC':
-      continue
-    if examples_batch.shape[0]!=0:
-      label_batch = []
-      label_batch.append(map(filename_list[3]))
-      labels = np.array(label_batch)
-      examples_batch=examples_batch.astype("float32")
-      feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
-      example = tf.train.Example(features=tf.train.Features(feature=feature))
-      writer.write(example.SerializeToString())
-  writer.close()
+    writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+'.tfrecord')
+    for file in files:
+        examples_batch = wav_to_spectro.wavfile_to_examples(file)
+        filename_list = (file.split('.wav')[0]).split('-')
+        # minor modifications
+        if filename_list[3]=='HIC':
+            continue
+        if examples_batch.shape[0]!=0:
+            label_batch = []
+            label_batch.append(map(filename_list[3]))
+            labels = np.array(label_batch)
+            examples_batch=examples_batch.astype("float32")
+            feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
+            example = tf.train.Example(features=tf.train.Features(feature=feature))
+            writer.write(example.SerializeToString())
+    writer.close()
 
-  # writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+'.tfrecord')
-  # for file in glob.glob(FLAGS.CHN_segment_dir+"*.wav"):
-  #   examples_batch = wav_to_spectro.wavfile_to_examples(file)
-  #   if examples_batch.shape[0]!=0:
-  #     filename_list = (file.split('.wav')[0]).split('-')
-  #     label_batch = []
-  #     label_batch.append(map(filename_list[3]))
-  #     labels = np.array(label_batch)
-  #     examples_batch=examples_batch.astype("float32")
-  #     feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
-  #     example = tf.train.Example(features=tf.train.Features(feature=feature))
-  #     writer.write(example.SerializeToString())
-  # writer.close()
+    # writer = tf.python_io.TFRecordWriter(FLAGS.tfrecord_file_dir+'test'+'.tfrecord')
+    # for file in glob.glob(FLAGS.CHN_segment_dir+"*.wav"):
+    #     examples_batch = wav_to_spectro.wavfile_to_examples(file)
+    #     if examples_batch.shape[0]!=0:
+    #         filename_list = (file.split('.wav')[0]).split('-')
+    #         label_batch = []
+    #         label_batch.append(map(filename_list[3]))
+    #         labels = np.array(label_batch)
+    #         examples_batch=examples_batch.astype("float32")
+    #         feature = {'data': _bytes_feature((examples_batch.tostring())),'label': _bytes_feature((labels.tostring())),'filename':_bytes_feature(file.split('/')[-1].split('.wav')[0])}
+    #         example = tf.train.Example(features=tf.train.Features(feature=feature))
+    #         writer.write(example.SerializeToString())
+    # writer.close()

@@ -40,12 +40,9 @@ flags.DEFINE_integer(
     'How many features in tfrecord')
 FLAGS = flags.FLAGS
 
-def plot_confusion_matrix(cm, classes,
-                          normalize=False,
-                          title='Confusion matrix',
-                          cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     """
-    This function prints and plots the confusion matrix.
+    Print and plot the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
     if normalize:
@@ -66,8 +63,8 @@ def plot_confusion_matrix(cm, classes,
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
+            horizontalalignment="center",
+            color="white" if cm[i, j] > thresh else "black")
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
@@ -78,30 +75,30 @@ balanced_train_path = FLAGS.CHN_DATASET_DIR
 train_data_num = len(os.listdir(balanced_train_path.split('/')[0]))
 batch_size = train_data_num-1
 with tf.Session() as sess:
-	filename_queue = tf.train.string_input_producer(
-        [data_path], num_epochs=1)
-	reader = tf.TFRecordReader()
-  	_, serialized_example = reader.read(filename_queue)
-  	features = tf.parse_single_example(
-      	serialized_example,
-      	features={
-        	'data': tf.FixedLenFeature([], tf.string),
-        	'label': tf.FixedLenFeature([], tf.string),
-        	'filename': tf.FixedLenFeature([], tf.string)
-        	},
+    filename_queue = tf.train.string_input_producer(
+    [data_path], num_epochs=1)
+    reader = tf.TFRecordReader()
+    _, serialized_example = reader.read(filename_queue)
+    features = tf.parse_single_example(
+        serialized_example,
+        features={
+            'data': tf.FixedLenFeature([], tf.string),
+            'label': tf.FixedLenFeature([], tf.string),
+            'filename': tf.FixedLenFeature([], tf.string)
+            },
         )
-	image = tf.decode_raw(features['data'], tf.float32)
-	image = tf.reshape(image, [FLAGS.NUM_FEATURES])
-	label = tf.decode_raw(features['label'], tf.int64)
-  	label = label[0]
-	filename = features['filename']
-	images, labels, filenames = tf.train.shuffle_batch([image, label, filename], batch_size=batch_size, capacity=30, num_threads=1, min_after_dequeue=10)
+    image = tf.decode_raw(features['data'], tf.float32)
+    image = tf.reshape(image, [FLAGS.NUM_FEATURES])
+    label = tf.decode_raw(features['label'], tf.int64)
+    label = label[0]
+    filename = features['filename']
+    images, labels, filenames = tf.train.shuffle_batch([image, label, filename], batch_size=batch_size, capacity=30, num_threads=1, min_after_dequeue=10)
 
-	init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-	sess.run(init_op)
-	coord = tf.train.Coordinator()
-	threads = tf.train.start_queue_runners(coord=coord)
-	img, lbl = sess.run([images, labels])
+    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+    sess.run(init_op)
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(coord=coord)
+    img, lbl = sess.run([images, labels])
 # pdb.set_trace()
 
 # for reliability balance:
@@ -138,35 +135,34 @@ y = newy #lbl
 # X = np.concatenate((X[y==0][:int(len(X[y==0])/2)],X[y!=0]),axis=0)
 # y = np.concatenate((y[y==0][:int(len(y[y==0])/2)],y[y!=0]),axis=0)
 
-lr =  LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,solver='svd', store_covariance=False, tol=0.0001)
+lr = LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,solver='svd', store_covariance=False, tol=0.0001)
 y_pred_list = []
 y_test_list = []
 average_accuracy = 0
 average_Fscore = 0
 kf = KFold(n_splits=5, shuffle=True)
 for train_index, test_index in kf.split(X):
-	X_train, X_test = X[train_index], X[test_index]
-	y_train, y_test = y[train_index], y[test_index]
-	lr.fit(X_train,y_train)
-	# print sum(lr.predict(X_test)==y_test)*1.0/len(y_test)
-	y_pred = lr.predict(X_test)
-	average_accuracy += sum(y_pred==y_test)*1.0/len(y_test)
-	# print f1_score(y_test, y_pred,average='macro')
-	average_Fscore += f1_score(y_test, y_pred, average='macro')
-	y_pred_list.extend(y_pred)
-	y_test_list.extend(y_test)
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    lr.fit(X_train,y_train)
+    # print sum(lr.predict(X_test)==y_test)*1.0/len(y_test)
+    y_pred = lr.predict(X_test)
+    average_accuracy += sum(y_pred==y_test)*1.0/len(y_test)
+    # print f1_score(y_test, y_pred,average='macro')
+    average_Fscore += f1_score(y_test, y_pred, average='macro')
+    y_pred_list.extend(y_pred)
+    y_test_list.extend(y_test)
 average_accuracy/=5
 average_Fscore/=5
 print "average_accuracy:",average_accuracy
 print "average_Fscore:",average_Fscore
 
 cnf_matrix = confusion_matrix(y_test_list, y_pred_list)
-class_names = ['CRY','FUS','LAU','BAB']
+class_names = ['CRY','FUS','LAU','BAB'] # Why omit HIC?
 
 np.set_printoptions(precision=2)
 plt.figure()
-plot_confusion_matrix(cnf_matrix, classes=class_names,
-                      title='Confusion matrix of 5-way LDA on tokens coded by two labelers')
+plot_confusion_matrix(cnf_matrix, classes=class_names, title='Confusion matrix of 5-way LDA on tokens coded by two labelers')
 plt.show()
 pdb.set_trace()
 np.save('results_npy/cnf_matrix_23_reliability_5way',cnf_matrix)

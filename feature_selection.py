@@ -18,8 +18,7 @@ import math
 import plot_histogram
 
 """
-python feature_selection.py --NUM_FEATURES=65 \
---FORWARD=TRUE --FLOATING=TRUE --SINGLE=FALSE
+python feature_selection.py --NUM_FEATURES=65 --FORWARD=TRUE --FLOATING=TRUE --SINGLE=FALSE
 """
 
 flags = tf.app.flags
@@ -61,93 +60,92 @@ train_data_num = len(os.listdir(balanced_train_path.split('/')[0]))
 
 batch_size = train_data_num
 with tf.Session() as sess:
-	filename_queue = tf.train.string_input_producer(
-        [data_path], num_epochs=1)
-	reader = tf.TFRecordReader()
-  	_, serialized_example = reader.read(filename_queue)
-  	features = tf.parse_single_example(
-      	serialized_example,
-      	features={
-        	'data': tf.FixedLenFeature([], tf.string),
-        	'label': tf.FixedLenFeature([], tf.string),
-        	'filename': tf.FixedLenFeature([], tf.string)
-        	},
+    filename_queue = tf.train.string_input_producer([data_path], num_epochs=1)
+    reader = tf.TFRecordReader()
+    _, serialized_example = reader.read(filename_queue)
+    features = tf.parse_single_example(
+        serialized_example,
+        features={
+            'data': tf.FixedLenFeature([], tf.string),
+            'label': tf.FixedLenFeature([], tf.string),
+            'filename': tf.FixedLenFeature([], tf.string)
+            },
         )
-	image = tf.decode_raw(features['data'], tf.float32)
-	image = tf.reshape(image, [FLAGS.NUM_FEATURES])
-	label = tf.decode_raw(features['label'], tf.int64)
-  	label = label[0]
-	filename = features['filename']
-	images, labels, filenames = tf.train.shuffle_batch([image, label, filename], batch_size=batch_size, capacity=30, num_threads=1, min_after_dequeue=10)
+    image = tf.decode_raw(features['data'], tf.float32)
+    image = tf.reshape(image, [FLAGS.NUM_FEATURES])
+    label = tf.decode_raw(features['label'], tf.int64)
+    label = label[0]
+    filename = features['filename']
+    images, labels, filenames = tf.train.shuffle_batch([image, label, filename], batch_size=batch_size, capacity=30, num_threads=1, min_after_dequeue=10)
 
-	init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-	sess.run(init_op)
-	coord = tf.train.Coordinator()
-	threads = tf.train.start_queue_runners(coord=coord)
-	img, lbl = sess.run([images, labels])
+    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+    sess.run(init_op)
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(coord=coord)
+    img, lbl = sess.run([images, labels])
 
 X = img
 y = lbl
 # PLOT HISTOGRAMS:
 # for i in range(0,65,1):
-# 	plot_histogram.plot_hist(X,y,feature_names,i,i+4)
+#     plot_histogram.plot_hist(X,y,feature_names,i,i+4)
 
 pdb.set_trace()
 # lr = LinearRegression()
 # lr = LogisticRegression()
 # lr = svm.SVC(kernel='linear')
-lr =  LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,
-              solver='svd', store_covariance=False, tol=0.0001) #(solver='lsqr',shrinkage='auto')
+lr = LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,
+    solver='svd', store_covariance=False, tol=0.0001) #(solver='lsqr',shrinkage='auto')
 # lr = svm.LinearSVC(multi_class='crammer_singer',random_state=12345)
 # lr = QuadraticDiscriminantAnalysis()
 
 if FLAGS.SINGLE:
-	sfs = SFS(lr,
-	           k_features=(1,64), #(1,64) # SFS will consider return any feature combination between min and max that scored highest in cross-validtion
-	           forward=FLAGS.FORWARD, # forward or backward
-	           floating=FLAGS.FLOATING, # put back?
-	           verbose=0,
-	           scoring='accuracy', #'neg_mean_squared_error',
-	           cv=5)
-	sfs = sfs.fit(X, y)
+    sfs = SFS(lr,
+        k_features=(1,64), #(1,64) # SFS will consider return any feature combination between min and max that scored highest in cross-validtion
+        forward=FLAGS.FORWARD, # forward or backward
+        floating=FLAGS.FLOATING, # put back?
+        verbose=0,
+        scoring='accuracy', #'neg_mean_squared_error',
+        cv=5)
+    sfs = sfs.fit(X, y)
 
-	best_feature_index=sfs.k_feature_idx_
-	best_feature_name = [feature_names[i] for i in best_feature_index]
-	print "The number of best features is:", len(best_feature_index)
-	print "The best features' index are:", best_feature_index
-	print "The best features are:", best_feature_name
+    best_feature_index=sfs.k_feature_idx_
+    best_feature_name = [feature_names[i] for i in best_feature_index]
+    print "The number of best features is:", len(best_feature_index)
+    print "The best features' index are:", best_feature_index
+    print "The best features are:", best_feature_name
 
-	fig = plot_sfs(sfs.get_metric_dict(), kind='std_err')
-	config = {(True,True):('FORWARD','FLOATING'),\
-	(True,False):('FORWARD','NFLOATING'),\
-	(False,True):('BACKWARD','FLOATING'),\
-	(False,False):('BACKWARD','NFLOATING'),}
-	fig.savefig('feature_selection/SINGLE-'+config[(FLAGS.FORWARD,FLAGS.FLOATING)][0]+'-'+config[(FLAGS.FORWARD,FLAGS.FLOATING)][1])
+    fig = plot_sfs(sfs.get_metric_dict(), kind='std_err')
+    config = {(True,True):('FORWARD','FLOATING'),\
+        (True,False):('FORWARD','NFLOATING'),\
+        (False,True):('BACKWARD','FLOATING'),\
+        (False,False):('BACKWARD','NFLOATING'),}
+    fig.savefig('feature_selection/SINGLE-'+config[(FLAGS.FORWARD,FLAGS.FLOATING)][0]+'-'+config[(FLAGS.FORWARD,FLAGS.FLOATING)][1])
 
 else:
-	config = {(True,True):('FORWARD','FLOATING'),\
-	(True,False):('FORWARD','NFLOATING'),\
-	(False,True):('BACKWARD','FLOATING'),\
-	(False,False):('BACKWARD','NFLOATING'),}
-	
-	best_feature_index_array = config.copy()
-	classifiers = config.copy()
-	for i,j in config:
-		sfs = SFS(lr,
-		           k_features=(1,64), #(1,64) # SFS will consider return any feature combination between min and max that scored highest in cross-validtion
-		           forward=i, # forward or backward
-		           floating=j, # put back?
-		           verbose=0,
-		           scoring='accuracy', #'neg_mean_squared_error',
-		           cv=5)
-		sfs = sfs.fit(X, y)			
-		classifiers[(i,j)] = sfs
-		best_feature_index_array[(i,j)] = sfs.k_feature_idx_
-	best_overlap_features = reduce(set.intersection, (set(val) for val in best_feature_index_array.values()))
-	best_feature_name = [feature_names[i] for i in best_overlap_features]
-	print "The number of best features is:", len(best_feature_name)
-	print "The best features' index are:", best_overlap_features
-	print "The best features are:", best_feature_name
+    config = {(True,True):('FORWARD','FLOATING'),\
+    (True,False):('FORWARD','NFLOATING'),\
+    (False,True):('BACKWARD','FLOATING'),\
+    (False,False):('BACKWARD','NFLOATING'),}
+
+    best_feature_index_array = config.copy()
+    classifiers = config.copy()
+    for i,j in config:
+        sfs = SFS(lr,
+            k_features=(1,64), #(1,64) # SFS will consider return any feature combination between min and max that scored highest in cross-validtion
+            forward=i, # forward or backward
+            floating=j, # put back?
+            verbose=0,
+            scoring='accuracy', #'neg_mean_squared_error',
+            cv=5)
+        sfs = sfs.fit(X, y)
+        classifiers[(i,j)] = sfs
+        best_feature_index_array[(i,j)] = sfs.k_feature_idx_
+    best_overlap_features = reduce(set.intersection, (set(val) for val in best_feature_index_array.values()))
+    best_feature_name = [feature_names[i] for i in best_overlap_features]
+    print "The number of best features is:", len(best_feature_name)
+    print "The best features' index are:", best_overlap_features
+    print "The best features are:", best_feature_name
 pdb.set_trace()
 
 import pandas as pd
