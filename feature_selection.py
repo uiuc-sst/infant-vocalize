@@ -151,10 +151,10 @@ pdb.set_trace()
 import pandas as pd
 pd.DataFrame.from_dict(sfs.get_metric_dict()).T
 
-sfs.subsets_ # the selected feature indices at each step
-sfs.k_feature_idx_ # indices of the 3 best features
-sfs.k_score_ # prediction score for these 3 features
-pdb.set_trace()
+# sfs.subsets_ # the selected feature indices at each step
+# sfs.k_feature_idx_ # indices of the 3 best features
+# sfs.k_score_ # prediction score for these 3 features
+# pdb.set_trace()
 
 # (0, 1, 4, 5, 7, 8, 11, 13, 14, 16, 25, 26, 29, 36, 39, 47, 59, 60, 63) - forward
 # (0, 1, 3, 4, 5, 8, 9, 11, 13, 14, 16, 24, 25, 26, 27, 29, 32, 36, 38, 39, 49, 57, 59, 60, 61, 63) - backward
