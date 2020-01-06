@@ -104,14 +104,14 @@ def learn_HMM(pi, A, B, iterlimit=1000, threshold=0.0001):
                 A[i, j] = num / denom
 
         # update B
-        # for j in range(N):
-        #     denom = np.sum(gamma[:, j])
-        #     for k in range(M):
-        #         num = 0
-        #         for t in range(T):
-        #             if O[t] == k:
-        #                 num += gamma[t, j]
-        #         B[j, k] = num / denom
+        #for j in range(N):
+        #    denom = np.sum(gamma[:, j])
+        #    for k in range(M):
+        #        num = 0
+        #        for t in range(T):
+        #            if O[t] == k:
+        #                num += gamma[t, j]
+        #        B[j, k] = num / denom
 
         # update pi
         pi = gamma[0, :]

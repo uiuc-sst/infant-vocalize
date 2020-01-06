@@ -101,30 +101,30 @@ def main():
     else:
         #plug into specific values of A
         # multi LC
-       #  A = np.array([[ 0.346,  0.225,  0.131,  0.297],
-       # [ 0.111,  0.289,  0.188,  0.412],
-       # [ 0.056,  0.182,  0.307,  0.455],
-       # [ 0.061,  0.152,  0.16 ,  0.627]])
+        # A = np.array([[ 0.346,  0.225,  0.131,  0.297],
+        # [ 0.111,  0.289,  0.188,  0.412],
+        # [ 0.056,  0.182,  0.307,  0.455],
+        # [ 0.061,  0.152,  0.16 ,  0.627]])
 
         #multi RD
-       #  A = np.array([[ 0.483,  0.211,  0.153,  0.152],
-       # [ 0.13 ,  0.271,  0.277,  0.322],
-       # [ 0.104,  0.169,  0.37 ,  0.356],
-       # [ 0.068,  0.158,  0.174,  0.599]])
+        # A = np.array([[ 0.483,  0.211,  0.153,  0.152],
+        # [ 0.13 ,  0.271,  0.277,  0.322],
+        # [ 0.104,  0.169,  0.37 ,  0.356],
+        # [ 0.068,  0.158,  0.174,  0.599]])
 
         #binary RD - norm
-       #  A = np.array([[ 0.944,  0.   ,  0.041,  0.015],
-       # [ 0.038,  0.962,  0.   ,  0.   ],
-       # [ 0.   ,  0.023,  0.906,  0.071],
-       # [ 0.   ,  0.018,  0.018,  0.964]])
+        # A = np.array([[ 0.944,  0.   ,  0.041,  0.015],
+        # [ 0.038,  0.962,  0.   ,  0.   ],
+        # [ 0.   ,  0.023,  0.906,  0.071],
+        # [ 0.   ,  0.018,  0.018,  0.964]])
 
-       # counting RD
-       # A = np.array([[ 0.432,  0.215,  0.141,  0.212],
-       # [ 0.196,  0.346,  0.161,  0.297],
-       # [ 0.184,  0.21 ,  0.317,  0.288],
-       # [ 0.132,  0.21 ,  0.15 ,  0.507]])
+        # counting RD
+        # A = np.array([[ 0.432,  0.215,  0.141,  0.212],
+        # [ 0.196,  0.346,  0.161,  0.297],
+        # [ 0.184,  0.21 ,  0.317,  0.288],
+        # [ 0.132,  0.21 ,  0.15 ,  0.507]])
 
-       A = hmm_util.getAmatrix(TextGrid_Directory, CsvDirectory, N)
+        A = hmm_util.getAmatrix(TextGrid_Directory, CsvDirectory, N)
 
     A = hmm_util.normalize(A)
     if B_norm:
@@ -138,7 +138,7 @@ def main():
     # FSCORE = f1_score(y, prediction_orignal,average='macro')
 
     if train:
-        newPi, newA, newB, logP_list  = myhmm.learn_HMM(pi, A, B, iterlimit=1000, threshold=0.0001)
+        newPi, newA, newB, logP_list = myhmm.learn_HMM(pi, A, B, iterlimit=1000, threshold=0.0001)
     # Viterbi to compute phi/most likely state sequence
     if not train:
         newA = A

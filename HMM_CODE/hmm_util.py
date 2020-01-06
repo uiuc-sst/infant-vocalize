@@ -6,12 +6,12 @@ import os
 from sklearn.metrics import f1_score
 
 def map(string_label):
-  if string_label=='CRY': return 0
-  if string_label=='FUS': return 1
-  if string_label=='LAU': return 2
-  if string_label=='BAB': return 3
-  if string_label=='HIC': return 4
-  else: return
+    if string_label=='CRY': return 0
+    if string_label=='FUS': return 1
+    if string_label=='LAU': return 2
+    if string_label=='BAB': return 3
+    if string_label=='HIC': return 4
+    else: return
 
 def getBmatrix_binary(TextGrid_Directory, TextGridname, CsvDirectory):
     tg = tgt.read_textgrid(TextGrid_Directory+TextGridname)
@@ -99,9 +99,7 @@ def getBmatrix_binary(TextGrid_Directory, TextGridname, CsvDirectory):
     return res, accuracy, y
 
 def normalize(m):
-    '''
-    Given a 2d matrix, this returns the same matrix normalized by row.
-    '''
+    # Given a 2d matrix, return it normalized by row.
     row_sums = m.sum(axis=1)
     return m / row_sums[:, np.newaxis]
 
@@ -110,7 +108,7 @@ def getBmatrix_multi(num_label,TextGrid_Directory, TextGridname, CsvDirectory):
     ipu_tier = tg.get_tier_by_name('Key-Child')
     filename = TextGridname.split('.')[0]
 
-    # dictionaries with key of fileanme, values of softmax probability predictions being that label
+    # dictionaries with key of filename, values of softmax probability predictions being that label
     prob = {}
     with open(CsvDirectory) as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')

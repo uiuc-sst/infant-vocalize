@@ -20,10 +20,10 @@ def plotconf(arr, xlab=None, ylab=None, title=None):
 
     # youwanttext = False
     # if youwanttext:
-    #     for i, cas in enumerate(conf_arr):
-    #         for j, c in enumerate(cas):
-    #             if c > 0:
-    #                 plt.text(j - .2, i + .2, c, fontsize=14)
+    #    for i, cas in enumerate(conf_arr):
+    #        for j, c in enumerate(cas):
+    #            if c > 0:
+    #                plt.text(j - .2, i + .2, c, fontsize=14)
 
     res = ax.imshow(array(norm_conf), cmap=cm.jet, interpolation='nearest')
     cb = fig.colorbar(res)
