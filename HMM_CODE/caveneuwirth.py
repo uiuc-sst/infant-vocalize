@@ -70,8 +70,8 @@ logger = logging.getLogger(__name__)
 def main():
     sys.setrecursionlimit(1500) # Apparently this is a very bad idea.
     # txt, chars = readandclean("textdata.txt")
-    TestTextgrid= FLAGS.TestTextgrid
-    TextGrid_Directory= FLAGS.Train_Directory
+    TestTextgrid = FLAGS.TestTextgrid
+    TextGrid_Directory = FLAGS.Train_Directory
     N = FLAGS.num_states
     A_rand_init = FLAGS.A_rand_init
     CsvDirectory = FLAGS.CsvDirectory
@@ -81,9 +81,9 @@ def main():
     train = FLAGS.train
     Test_Directory = FLAGS.Test_Directory
 
-    if getBmatrix=="multi":
+    if getBmatrix == "multi":
         B, accuracy_original, y, FSCORE_original = hmm_util.getBmatrix_multi(N, Test_Directory, TestTextgrid, CsvDirectory)
-    if getBmatrix=="binary":
+    if getBmatrix == "binary":
         B, accuracy_original, y, FSCORE_original = hmm_util.getBmatrix_binary(N, Test_Directory, TestTextgrid, CsvDirectory)
 
     # This where we set N - states; M or T - observations
@@ -131,8 +131,8 @@ def main():
         B = hmm_util.normalize(B) # or not normalize it
 
     # accuracy after norm
-    prediction_orignal = np.argmax(B,0)
-    accuracy_norm = sum(y==prediction_orignal)*1.0/len(y)
+    prediction_orignal = np.argmax(B, 0)
+    accuracy_norm = sum(y == prediction_orignal) * 1.0/len(y)
 
     # F-score
     # FSCORE = f1_score(y, prediction_orignal,average='macro')

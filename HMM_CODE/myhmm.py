@@ -153,21 +153,21 @@ def test_HMM_viterbi(M, N, newPi, newA, newB, y, lamb):
             max_value = -np.infty
             max_state = -1
             for i in range(N):
-                if phi[t - 1][i] + np.log(newA[i, j])>max_value:
+                if phi[t - 1][i] + np.log(newA[i, j]) > max_value:
                     max_value = phi[t - 1][i] + np.log(newA[i, j])
                     max_state = i
             phi[t, j] = max_value + lamb * np.log(newB[j, t])
-            state_sequence[t,j] = max_state # best state to [t,j]
+            state_sequence[t, j] = max_state # best state to [t,j]
 
-    viterbi_logP = np.max(phi[M-1,:])
-    viterbi_state = np.argmax(phi[M-1,:])
+    viterbi_logP = np.max(phi[M-1, :])
+    viterbi_state = np.argmax(phi[M-1, :])
     best_sequence = [viterbi_state]
     for t in range(M-1, 0, -1):
-        viterbi_state = int(state_sequence[t,viterbi_state])
+        viterbi_state = int(state_sequence[t, viterbi_state])
         best_sequence.append(viterbi_state)
     best_sequence.reverse()
     best_sequence = np.array(best_sequence)
     y = np.array(y)
-    updated_accuracy = sum(best_sequence==y)*1.0/len(y)
+    updated_accuracy = sum(best_sequence == y) * 1.0/len(y)
     FSCORE = f1_score(y, best_sequence, average='macro')
     return updated_accuracy, best_sequence, FSCORE

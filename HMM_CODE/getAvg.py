@@ -14,7 +14,7 @@ with open(filename) as f:
 # In[31]:
 NN_ACCURACY = 0
 NN_FSCORE = 0
-for idx in range(1,10,2):
+for idx in range(1, 10, 2):
     temp_line = lines[idx]
     line_elems = temp_line.split(" ")
     NN_ACCURACY = NN_ACCURACY + float(line_elems[7])
@@ -26,7 +26,7 @@ avg_nn_fscore = NN_FSCORE / 5.0
 update_m = {}
 #lambda:[accuracy, fsocre]
 unique_lam = 0
-for idx in range(1,len(lines),2):
+for idx in range(1, len(lines), 2):
     lam = lines[idx-1].split(" ")[1]
     temp_line = lines[idx].split(" ")
     if lam in update_m:
@@ -47,4 +47,4 @@ nn_fscore = "Average NN Fscore: " + str(avg_nn_fscore) + "\n"
 with open(output, 'w') as file:
     file.write(nn_accuracy)
     file.write(nn_fscore)
-    file.write(json.dumps(avg_m,sort_keys=True, indent=4, separators=(',', ': ')))
+    file.write(json.dumps(avg_m, sort_keys=True, indent=4, separators=(',', ': ')))
