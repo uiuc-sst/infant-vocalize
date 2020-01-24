@@ -50,11 +50,11 @@ flags.DEFINE_string(
 FLAGS = flags.FLAGS
 
 def map(string_label):
-    if string_label==0: return 'CRY'
-    if string_label==1: return 'FUS'
-    if string_label==2: return 'LAU'
-    if string_label==3: return 'BAB'
-    if string_label==4: return 'HIC'
+    if string_label == 0: return 'CRY'
+    if string_label == 1: return 'FUS'
+    if string_label == 2: return 'LAU'
+    if string_label == 3: return 'BAB'
+    if string_label == 4: return 'HIC'
     else: return
 
 # # number of cases, number of correctly classified
@@ -97,11 +97,11 @@ def main(_):
     # Log the version.
     logging.set_verbosity(tf.logging.INFO)
     if FLAGS.filenames:
-        filenames= FLAGS.filenames
+        filenames = FLAGS.filenames
     if FLAGS.batch_size:
-        batch_size= FLAGS.batch_size
+        batch_size = FLAGS.batch_size
     if FLAGS.num_epochs:
-        num_epochs= FLAGS.num_epochs
+        num_epochs = FLAGS.num_epochs
     # Load data placeholders of [batch_size, 100, 64]
     images, labels, filename = read_data.loadembeddingtest(filenames, batch_size=batch_size, num_epochs=num_epochs, feature_type=FLAGS.prosody_or_fbank)
     # Number of test data
@@ -109,7 +109,7 @@ def main(_):
     #1-fold test0: ~500
     test_data_num = sum(1 for _ in tf.python_io.tf_record_iterator(filenames))
     #500 #12768-1326 #len(os.listdir(CHN_test_files.split('/')[0]))
-    correct=0
+    correct = 0
     # build model graph
     model = CNNmodel.CNNmodel(inputs=images,labels=labels,num_classes=FLAGS.num_classes,is_train=False, feature_type=FLAGS.prosody_or_fbank)
     saver = tf.train.Saver(tf.global_variables())
@@ -128,7 +128,7 @@ def main(_):
             for i in xrange(test_data_num): # for each batch
                 img, lab, filena, pred, logits = sess.run([images, labels, filename, model._predictions, model._logits])
                 # pdb.set_trace()
-                # miss[map(lab)][map(pred)]+=1
+                # miss[map(lab)][map(pred)] += 1
                 start_time = filena.split('-')[-3]
                 end_time = filena.split('-')[-2]
                 name = filena.split('-')[0]
@@ -142,8 +142,8 @@ def main(_):
                 pred_array.append(pred[0])
             coord.request_stop()
             coord.join(threads)
-        lab_array=np.array(lab_array)
-        pred_array=np.array(pred_array)
+        lab_array = np.array(lab_array)
+        pred_array = np.array(pred_array)
         Fscore = f1_score(lab_array, pred_array,average='macro')
         Accuracy = sum(lab_array==pred_array)*1.0/test_data_num
         print('F-score:',Fscore)

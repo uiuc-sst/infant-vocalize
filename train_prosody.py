@@ -38,11 +38,11 @@ def main(_):
     # Logging the version.
     logging.set_verbosity(tf.logging.INFO)
     if FLAGS.filenames:
-        filenames= FLAGS.filenames
+        filenames = FLAGS.filenames
     if FLAGS.batch_size:
-        batch_size= FLAGS.batch_size
+        batch_size = FLAGS.batch_size
     if FLAGS.num_epochs:
-        num_epochs= FLAGS.num_epochs
+        num_epochs = FLAGS.num_epochs
 
     # Load data placeholders of [batch_size, 100, 64]
     images, labels, filenames = read_data.loadembedding(filenames, batch_size=batch_size, num_epochs=num_epochs, feature_type=FLAGS.prosody_or_fbank)

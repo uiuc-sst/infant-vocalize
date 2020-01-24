@@ -47,7 +47,7 @@ def segment_long_audio(wav_file):
     # Convert to mono.
     if len(data.shape) > 1:
         data = np.mean(data, axis=1)
-    if len(data)==0:
+    if len(data) == 0:
         return 0
 
     # Resample to the 16000
@@ -70,7 +70,7 @@ def wavfile_to_examples(wav_file):
     # Convert to mono.
     if len(data.shape) > 1:
         data = np.mean(data, axis=1)
-    if len(data)==0:
+    if len(data) == 0:
         return 0
     if sample_rate != params.SAMPLE_RATE:
         data = resampy.resample(data, sample_rate, params.SAMPLE_RATE)
@@ -91,7 +91,7 @@ def wavfile_to_examples(wav_file):
     example_hop_length = int(round(params.EXAMPLE_HOP_SECONDS * features_sample_rate))
 
     # added: zero pad the frame to expected frame number for each example log-mel FBANK
-    if log_mel.shape[0]%params.NUM_FRAMES:
+    if log_mel.shape[0] % params.NUM_FRAMES:
         pad_data = np.zeros((int(np.ceil(1.0*log_mel.shape[0]/params.NUM_FRAMES)*params.NUM_FRAMES),log_mel.shape[1]))
         pad_data[:log_mel.shape[0],:log_mel.shape[1]] = log_mel
         log_mel = pad_data

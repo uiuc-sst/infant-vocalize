@@ -103,18 +103,18 @@ with tf.Session() as sess:
 
 # for reliability balance:
 newx = np.zeros((60*5,23))
-newx[:60,:]=img[lbl==4][:60]
-newx[60:120,:]=img[lbl==3][:60]
-newx[120:180,:]=img[lbl==2][:60]
-newx[180:240,:]=img[lbl==1][:60]
-newx[240:300,:]=img[lbl==0][:60]
+newx[:60,:] = img[lbl == 4][:60]
+newx[60:120,:] = img[lbl == 3][:60]
+newx[120:180,:] = img[lbl == 2][:60]
+newx[180:240,:] = img[lbl == 1][:60]
+newx[240:300,:] = img[lbl == 0][:60]
 
 newy = np.zeros(60*5)
-newy[:60]=4
-newy[60:120]=3
-newy[120:180]=2
-newy[180:240]=1
-newy[240:300]=0
+newy[:60] = 4
+newy[60:120] = 3
+newy[120:180] = 2
+newy[180:240] = 1
+newy[240:300] = 0
 
 # 5-way
 X = newx #img
@@ -145,15 +145,15 @@ for train_index, test_index in kf.split(X):
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
     lr.fit(X_train,y_train)
-    # print sum(lr.predict(X_test)==y_test)*1.0/len(y_test)
+    # print sum(lr.predict(X_test) == y_test)*1.0/len(y_test)
     y_pred = lr.predict(X_test)
-    average_accuracy += sum(y_pred==y_test)*1.0/len(y_test)
+    average_accuracy += sum(y_pred == y_test)*1.0/len(y_test)
     # print f1_score(y_test, y_pred,average='macro')
     average_Fscore += f1_score(y_test, y_pred, average='macro')
     y_pred_list.extend(y_pred)
     y_test_list.extend(y_test)
-average_accuracy/=5
-average_Fscore/=5
+average_accuracy /= 5
+average_Fscore /= 5
 print "average_accuracy:",average_accuracy
 print "average_Fscore:",average_Fscore
 

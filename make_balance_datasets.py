@@ -41,7 +41,7 @@ fm = {
 random_files = []
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:
-        if f=='.DS_Store':
+        if f == '.DS_Store':
             continue
         # if train:
         #     if f.split('-')[0] == test_file_name:
@@ -51,7 +51,7 @@ for root, dirs, filenames in os.walk(indir):
         #         continue
         text = (f.split('.wav')[0]).split('-')[3]
         if text in m:
-            m[text]+=1
+            m[text] += 1
             random_files.append(f)
 max_num_samples = max(m.values())
 min_num_samples = min(m.values())
@@ -63,14 +63,14 @@ pdb.set_trace()
 # create balanced datasets
 if not os.path.exists(dest):
     os.makedirs(dest)
-copy_num=0
+copy_num = 0
 num = {'BAB':0,'CRY':0,'FUS':0,'LAU':0,'HIC':0}
 random.shuffle(random_files)
 for f in random_files:
     text = (f.split('.wav')[0]).split('-')[3]
-    if num[text]<min_num_samples:
+    if num[text] < min_num_samples:
         shutil.copy(indir+f, dest)
         copy_num += 1
-        num[text]+=1
+        num[text] += 1
 print(num)
 print(copy_num)

@@ -4,8 +4,8 @@ import pdb
 import params
 
 def create_prosody_model(input_batch,num_classes,labels_batch,is_training):
-    input_batch=tf.reshape(input_batch, [-1, params.NUM_FEATURES]) #[batch,20]
-    # input_batch=tf.reshape(input_batch, [-1, params.NUM_FEATURE_SINGLE]) #for one feature case
+    input_batch = tf.reshape(input_batch, [-1, params.NUM_FEATURES]) #[batch,20]
+    # input_batch = tf.reshape(input_batch, [-1, params.NUM_FEATURE_SINGLE]) #for one feature case
 
     # net = slim.fully_connected(
     #   input_batch, 128, activation_fn=tf.nn.relu)
@@ -27,7 +27,7 @@ def create_fbank_model(input_batch,num_classes,labels_batch,is_training):
          slim.arg_scope([slim.conv2d], kernel_size=[3, 3], stride=1, padding='SAME'), \
          slim.arg_scope([slim.max_pool2d], kernel_size=[2, 2], stride=4, padding='SAME'):
 
-        net=tf.reshape(input_batch, [-1, dim_list[1], dim_list[2], 1]) #[batch,96,64,1]
+        net = tf.reshape(input_batch, [-1, dim_list[1], dim_list[2], 1]) #[batch,96,64,1]
         net = slim.conv2d(net, 8, scope='conv1')
         net = slim.max_pool2d(net, scope='pool1') # batch, 48, 32, 8
         net = slim.conv2d(net, 16, scope='conv2')

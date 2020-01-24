@@ -109,7 +109,7 @@ if FLAGS.SINGLE:
         cv=5)
     sfs = sfs.fit(X, y)
 
-    best_feature_index=sfs.k_feature_idx_
+    best_feature_index = sfs.k_feature_idx_
     best_feature_name = [feature_names[i] for i in best_feature_index]
     print "The number of best features is:", len(best_feature_index)
     print "The best features' index are:", best_feature_index
