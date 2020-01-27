@@ -55,9 +55,9 @@ for root, dirs, filenames in os.walk(indir):
             random_files.append(f)
 max_num_samples = max(m.values())
 min_num_samples = min(m.values())
-print m
-print "max_samples:",max_num_samples
-print "min_samples:",min_num_samples
+print(m)
+print("max_samples:",max_num_samples)
+print("min_samples:",min_num_samples)
 pdb.set_trace()
 
 # create balanced datasets

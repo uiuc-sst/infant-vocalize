@@ -147,9 +147,9 @@ def main():
 
     updated_accuracy, best_sequence, FSCORE = myhmm.test_HMM_viterbi(M, N, newPi, newA, newB, y, lamb)
 
-    print "lambda:", lamb
-    print "NN accuracy, NN_FSCORE, update accuracy, update F-score:", accuracy_original, FSCORE_original, updated_accuracy, FSCORE
-    # print "F-SCORE:", FSCORE
+    print("lambda:", lamb)
+    print("NN accuracy, NN_FSCORE, update accuracy, update F-score:", accuracy_original, FSCORE_original, updated_accuracy, FSCORE)
+    # print("F-SCORE:", FSCORE)
     # pdb.set_trace()
 
     # plt = plotconf(newA, xlab=['CRY','FUS','LAU','BAB'], ylab=['CRY','FUS','LAU','BAB'], title="A Matrix")

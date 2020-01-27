@@ -111,9 +111,9 @@ if FLAGS.SINGLE:
 
     best_feature_index = sfs.k_feature_idx_
     best_feature_name = [feature_names[i] for i in best_feature_index]
-    print "The number of best features is:", len(best_feature_index)
-    print "The best features' index are:", best_feature_index
-    print "The best features are:", best_feature_name
+    print("The number of best features is:", len(best_feature_index))
+    print("The best features' index are:", best_feature_index)
+    print("The best features are:", best_feature_name)
 
     fig = plot_sfs(sfs.get_metric_dict(), kind='std_err')
     config = {(True,True):('FORWARD','FLOATING'),\
@@ -143,9 +143,9 @@ else:
         best_feature_index_array[(i,j)] = sfs.k_feature_idx_
     best_overlap_features = reduce(set.intersection, (set(val) for val in best_feature_index_array.values()))
     best_feature_name = [feature_names[i] for i in best_overlap_features]
-    print "The number of best features is:", len(best_feature_name)
-    print "The best features' index are:", best_overlap_features
-    print "The best features are:", best_feature_name
+    print("The number of best features is:", len(best_feature_name))
+    print("The best features' index are:", best_overlap_features)
+    print("The best features are:", best_feature_name)
 pdb.set_trace()
 
 import pandas as pd

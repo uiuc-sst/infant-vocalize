@@ -72,10 +72,10 @@ def learn_HMM(pi, A, B, iterlimit=1000, threshold=0.0001):
             beta[t, :] *= c[t]
 
         if debug:
-            print "alpha: (first few lines)"
-            print alpha[:5, :]
-            print "\nbeta: (first few lines)"
-            print beta[:5, :]
+            print("alpha: (first few lines)")
+            print(alpha[:5, :])
+            print("\nbeta: (first few lines)")
+            print(beta[:5, :])
 
         # compute gammas
         for t in range(T):
@@ -116,30 +116,30 @@ def learn_HMM(pi, A, B, iterlimit=1000, threshold=0.0001):
         # update pi
         pi = gamma[0, :]
 
-        print "Iteration " + str(cnt + 1)
+        print("Iteration " + str(cnt + 1))
 
         logP = -1 * np.sum(map(lambda ct: math.log(ct), c))
-        print "logP: ", logP
+        print("logP: ", logP)
         logP_list.append(logP)
         diff = logP - logPold
-        print "change in prob (should be positive): ", diff, "\n"
+        print("change in prob (should be positive): ", diff, "\n")
         if diff < 0:
             "ERROR: diff is not positive!"
             break
         if diff < threshold:
-            print "We have reached our goal. diff=", diff
+            print("We have reached our goal. diff=", diff)
             converged = True
         logPold = logP
 
         if debug:
-            print "pi:"
-            print pi, sum(pi)
-            print "A:"
+            print("pi:")
+            print(pi, sum(pi))
+            print("A:")
             for a in A:
-                print a, sum(a)
-            print "B:"
+                print(a, sum(a))
+            print("B:")
             for b in B:
-                print b, sum(b)
+                print(b, sum(b))
         cnt += 1
     return pi, A, B, logP_list
 

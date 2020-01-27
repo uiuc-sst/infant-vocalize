@@ -145,17 +145,17 @@ for train_index, test_index in kf.split(X):
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
     lr.fit(X_train,y_train)
-    # print sum(lr.predict(X_test) == y_test)*1.0/len(y_test)
+    # print(sum(lr.predict(X_test) == y_test)*1.0/len(y_test))
     y_pred = lr.predict(X_test)
     average_accuracy += sum(y_pred == y_test)*1.0/len(y_test)
-    # print f1_score(y_test, y_pred,average='macro')
+    # print(f1_score(y_test, y_pred,average='macro'))
     average_Fscore += f1_score(y_test, y_pred, average='macro')
     y_pred_list.extend(y_pred)
     y_test_list.extend(y_test)
 average_accuracy /= 5
 average_Fscore /= 5
-print "average_accuracy:",average_accuracy
-print "average_Fscore:",average_Fscore
+print("average_accuracy:",average_accuracy)
+print("average_Fscore:",average_Fscore)
 
 cnf_matrix = confusion_matrix(y_test_list, y_pred_list)
 class_names = ['CRY','FUS','LAU','BAB'] # Why omit HIC?
