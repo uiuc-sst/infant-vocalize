@@ -18,7 +18,7 @@ import math
 import plot_histogram
 
 """
-python feature_selection.py --NUM_FEATURES=65 --FORWARD=TRUE --FLOATING=TRUE --SINGLE=FALSE
+python3 feature_selection.py --NUM_FEATURES=65 --FORWARD=TRUE --FLOATING=TRUE --SINGLE=FALSE
 """
 
 flags = tf.app.flags

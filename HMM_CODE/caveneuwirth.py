@@ -19,7 +19,7 @@ from sklearn.metrics import f1_score
 # sys.stdout = f
 
 '''
-python caveneuwirth.py \
+python3 caveneuwirth.py \
 --TestTextgrid='e20170719_090917_011543_GRP.TextGrid' \
 --Train_Directory='/Users/yijiaxu/Desktop/prosody_AED/HMM_CODE/train_CHN_Textgrid/' \
 --A_rand_init=False \

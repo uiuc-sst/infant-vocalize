@@ -1,6 +1,6 @@
 """
 Usage:
-python eval.py \
+python3 eval.py \
 --filenames=balanced_tfrecords_21/test.tfrecord \
 --batch_size=1 --num_epochs=1 \
 --ckptdir='ckpt_21/' --restore=True --num_classes=4 \

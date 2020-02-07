@@ -6,7 +6,7 @@ import random
 import shutil
 
 """
-python make_balance_datasets.py \
+python3 make_balance_datasets.py \
 --CHN_segments_diretory='/Users/yijiaxu/Desktop/prosody_AED/CHN_segments/' \
 --Create_balanced_train=True \
 --Dest_directory='balanced_CHN_segments_train/'

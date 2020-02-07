@@ -1,6 +1,6 @@
 """
 Usage:
-python train_prosody.py \
+python3 train_prosody.py \
 --filenames=balanced_tfrecords_21/train.tfrecord \
 --batch_size=30 --num_epochs=1200 \
 --logDir='ckpt_21_1layer/' --restore=False --num_classes=4

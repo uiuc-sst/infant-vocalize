@@ -22,7 +22,7 @@ from sklearn.metrics import confusion_matrix
 import itertools
 
 """
-python feature_selection.py --NUM_FEATURES=23 \
+python3 feature_selection.py --NUM_FEATURES=23 \
 --FORWARD=TRUE --FLOATING=TRUE --SINGLE=FALSE \
 --TF_RECORDS_DIR='reliability_CHN_segments_tfrecords/train_23.tfrecord'
 --CHN_DATASET_DIR='reliability_CHN_segments/'
