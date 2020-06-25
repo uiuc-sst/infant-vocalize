@@ -125,23 +125,21 @@ def main():
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
     parser.add_argument('--feature-train-path', type=str,
-                        help='the file of the fbank of training data',\
+                        help='the file of the opensmile features of training data',\
                         default="/home/jialu/infant-vocalize/segment_mode/merged_idp_lena_google_fs/train_embo_norm.h5")
     parser.add_argument('--emo-train-path', type=str,
-                        help='the file of the target of training data',\
+                        help='the file of the label of training data',\
                         default="/home/jialu/infant-vocalize/segment_mode/merged_idp_lena_google_fs/train_label.h5")
     parser.add_argument('--feature-test-path', type=str,
-                        help='the file of the fbank of training data',\
+                        help='the file of the opensmile features of testing data',\
                         default="/home/jialu/infant-vocalize/segment_mode/merged_idp_lena/test_embo_norm.h5")
     parser.add_argument('--emo-test-path', type=str,
-                        help='the file of the target of training data',\
+                        help='the file of the label of testing data',\
                         default="/home/jialu/infant-vocalize/segment_mode/merged_idp_lena/test_label.h5")
     parser.add_argument('--load', type = str, default=None,
-                        help = "Specify if want to load emotion model")
+                        help = "Specify if want to load any emotion model")
     parser.add_argument('--save', type=str, default=None,
-                        help='For Saving the emotion Model')
-    parser.add_argument('--cnn_att', type=str, default=True,
-                        help='Choose which model to use')
+                        help='Specify the save path for the model')
 
     args = parser.parse_args()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
@@ -195,7 +193,6 @@ def main():
         print("Best F1 weighted score is ",f1)
         print("Best F1 macro score is ",f1_mac)
         print("Confusion matrix",cm)
-        #util.write_h5(hidden_nodes1,"train_embo_norm_first_layer.h5")
 
 if __name__ == '__main__':
     main()
