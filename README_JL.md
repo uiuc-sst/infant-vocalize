@@ -10,13 +10,13 @@ LDA/LDA_classification.py -- LDA model entry point
 
 
 ### Important argument structures ###
-feature-train-path: path to training features 
-emo-train-path: path to training labels
-feature-test-path: path to testing features 
-emo-test-path: path to testing labels
-load: path to pretrained models
-save: path to where to save trained models
-weighted_sampler: whether to use weighted sampler or not
+# feature-train-path: path to training features 
+# emo-train-path: path to training labels
+# feature-test-path: path to testing features 
+# emo-test-path: path to testing labels
+# load: path to pretrained models
+# save: path to where to save trained models
+# weighted_sampler: whether to use weighted sampler or not
 
 ### Extracted feature pathes and names ###
 path to extracted features for infant data: /ws/ifp-05/hasegawa/jialuli3/features/merged_idp_lena_5way
