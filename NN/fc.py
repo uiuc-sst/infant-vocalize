@@ -25,6 +25,32 @@ class FC(nn.Module):
     def get_hidden_nodes(self):
         return self.hidden1,self.hidden2
 
+class FC_two_tiers(nn.Module):
+    def __init__(self, input_size=201, hidden_size=5, num_classes_chi=4, num_classes_mom=6, stack=False):
+        super(FC_two_tiers, self).__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        # Second fully connected layer that outputs our 10 labels
+        self.fc2 = nn.Linear(hidden_size, num_classes_chi)
+        self.fc3 = nn.Linear(hidden_size, num_classes_mom)
+        self.hidden1=torch.tensor([],dtype=torch.torch.float32,device=torch.device("cuda"))
+        self.hidden2=torch.tensor([],dtype=torch.torch.float32,device=torch.device("cuda"))
+        self.hidden3=torch.tensor([],dtype=torch.torch.float32,device=torch.device("cuda"))
+        self.stack=stack
+
+    def forward(self, x):
+        x=F.leaky_relu(self.fc1(x))
+        out_chi=F.leaky_relu(self.fc2(x))
+        out_mom=F.leaky_relu(self.fc3(x))
+
+        if self.stack:
+            self.hidden1=torch.cat((self.hidden1,x))
+            self.hidden2=torch.cat((self.hidden2,out_chi))
+            self.hidden3=torch.cat((self.hidden3,out_mom))
+        return out_chi,out_mom
+
+    def get_hidden_nodes(self):
+        return self.hidden1,self.hidden2,self.hidden3
+
 class threeLayerFC(nn.Module):
     def __init__(self, input_size=201, hidden_size=5, num_classes=4):
         super(threeLayerFC, self).__init__()
