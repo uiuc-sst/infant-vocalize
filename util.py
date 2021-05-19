@@ -18,14 +18,19 @@ def read_h5(filename):
     f=h5py.File(filename,"r")
     keys=list(f.keys())
     if type(f[keys[0]].value)==np.int64:
-        content=np.zeros((len(keys)))
+        content=np.zeros((len(keys),1))
     else:
         content=np.zeros((len(keys),len(f[keys[0]])))
-    # for k_idx in range(len(keys)):
-    #     k=keys[k_idx]
-    #     content[k_idx]=np.asarray(f[(str(k))])
     for k in keys:
         content[int(k)]=np.asarray(f[(str(k))])
+    return content,keys
+
+def read_h5_var(filename):
+    f=h5py.File(filename,"r")
+    keys=list(f.keys())
+    content=[]
+    for k_idx in range(len(keys)):
+        content.append(np.asarray(f[str(k_idx)]))
     return content,keys
 
 def write_file(idx,total_files,f_out):
@@ -33,10 +38,10 @@ def write_file(idx,total_files,f_out):
         f_out.write(total_files[i])
     f_out.close()
 
-def write_h5(content,filename):
+def write_h5(content,filename,type=np.float64):
     f=h5py.File(filename,"w")
     for k in range(len(content)):
-        f.create_dataset(name=str(k),data=content[k].astype(np.int64))
+        f.create_dataset(name=str(k),data=content[k].astype(type))
     f.close()
 
 def merge_file(f_out_file,f1_total,f2_total,f3_total=None):
@@ -65,12 +70,41 @@ def merge_hf(fout_name,f1_name,f2_name,f3_name=None):
     for k in range(len(keys1)):
         fout.create_dataset(name=str(idx),data=f1[str(k)].value)
         idx+=1
+
     for k in range(len(keys2)):
+    #for k in range(300):
         fout.create_dataset(name=str(idx),data=f2[str(k)].value)
         idx+=1
+
     if f3_name:
         keys3=f3.keys()
         for k in range(len(keys3)):
+        #for k in range(500):
+            fout.create_dataset(name=str(idx),data=f3[str(k)].value)
+            idx+=1
+
+def merge_hf_selected(fout_name,f1_name,f2_name,f3_name=None):
+    f1=h5py.File(f1_name,"r")
+    f2=h5py.File(f2_name,"r")
+    if f3_name: f3=h5py.File(f3_name,"r")
+    fout=h5py.File(fout_name,"w")
+
+    keys1=f1.keys()
+    keys2=list(f2.keys())[:100]
+    idx=0
+    #print(len(keys1),len(keys2),len(keys1)+len(keys2))
+    for k in range(len(keys1)):
+        fout.create_dataset(name=str(idx),data=f1[str(k)].value)
+        idx+=1
+
+    #for k in range(len(keys2)):
+    for k in keys2:
+        fout.create_dataset(name=str(idx),data=f2[str(k)].value)
+        idx+=1
+
+    if f3_name:
+        keys3=list(f3.keys())[:300]
+        for k in keys3:
             fout.create_dataset(name=str(idx),data=f3[str(k)].value)
             idx+=1
 
@@ -115,7 +149,7 @@ def get_num_classes(label_file):
     keys=labels.keys()
     label_counts=[]
     for k in keys:
-        label_counts.append(tuple(labels[k].value))
+        label_counts.append(labels[k].value)
     print(Counter(label_counts))
 
 def write_selected_dataset(idx,h5in_file,h5out_file):
@@ -278,3 +312,37 @@ def write_yaml(files,output_yaml):
         duration = len(data)/rate
         f_yaml.write("- {{ duration: {}, offset: 0, speaker_id: 001, wav: {} }}\n".format(\
                 str(duration),wav_name))
+
+def concatenate_hf_list(h5,out_h5,axis=0):
+    content,_=read_h5_var(h5[0])
+    content = np.asarray(content)
+    if len(content.shape)<2: content=content.reshape(-1,1)
+    print(content.shape)
+    for j in range(1,len(h5)):
+        curr_content,_=read_h5_var(h5[j])
+        curr_content=np.asarray(curr_content)
+        print(curr_content.shape)
+        if len(curr_content.shape)<2: curr_content=curr_content.reshape(-1,1)
+        if axis==1:
+            content=np.hstack((content,curr_content))
+        else:
+            content=np.vstack((content,curr_content))
+        print(j,content.shape)
+    write_h5(content,out_h5)
+
+
+def merge_minority_class(in_file,in_label,out_file,out_label,classes=[]):
+    f_in=h5py.File(in_file,"r")
+    f_in_label=h5py.File(in_label,"r")
+    f_out=h5py.File(out_file,"w")
+    f_out_label=h5py.File(out_label,"w")
+
+    k=0
+    for i in range(len(f_in_label.keys())):
+        curr_class=f_in_label[str(i)].value 
+        if curr_class in classes:
+            f_out_label[str(k)]=curr_class
+            f_out.create_dataset(name=str(k),data=f_in[str(i)].value)
+            k+=1
+
+#get_num_classes("/home/jialu/disk1/infant-vocalize/full_mode/idp_mom_face/test_label1.h5")
