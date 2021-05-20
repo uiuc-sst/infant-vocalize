@@ -58,3 +58,23 @@ idp_lena_5way_combined1_multiple.pt means default+complementary features for the
 idp_lena_5way_combined_fisher_1000_weighted_sampler_1.pt means selected top 1000 features for default+complementary feature set for the 1st fold of idp+lena data of infant data. 
 
 ### Most of the times, the feature names and model names explain itself what the settings of the models are. ###
+
+### Labeling scheme ###
+#### Classification models used in Speech communication paper
+Infant vocalization: CRY 0, FUS 1, LAU 2, BAB 3, SCR 4
+
+Mother vocalization: IDS 0, ADS 1, PLA 2, RHY 3, LAU 4, WHI 5
+
+#### Multitask learning: label consists of 5 digis
+
+first digit: speaker diarization label, SIL 0, CHN 1, FAN 2, MAN 3, CXN 4, MIX 5
+
+second digit: CHN label, SIL 0, CRY 1, FUS 2, LAU 3, BAB 4, SCR 5
+
+third digit: FAN label, SIL 0, IDS 1, FAN 2, LAU 3, PLA 4
+
+fourth digit: MAN label, SIL 0, IDS 1, MAN 2, LAU 3, SNG 4, PLA 5
+
+fifth digit: CXN label, SIL 0, IDS 1, CXN 2, LAU 3, SNG 4, PLA 5
+
+For example, 12000 means infant is fussing, 51100 means infant is crying while mom is talking to infant with motherese. Note that if first digit is 0, then the rest of the digits will be zeros (00000). 00000 is the unique label for silence.
