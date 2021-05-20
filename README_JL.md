@@ -8,6 +8,10 @@ SER/ser_adapt_lena.py -- CNN model entry point
 
 SER/model_py/cnn_multi_filters_v2.py -- CNN model implementation
 
+SER/ser_adapt_lena_multitask.py -- CNN model entry point for multi-tiers training
+
+SER/model_py/cnn_multi_filters_multitask.py -- CNN model implementation for multi-tiers
+
 LDA/LDA_classification.py -- LDA model entry point
 
 
@@ -77,4 +81,4 @@ fourth digit: MAN label, SIL 0, IDS 1, MAN 2, LAU 3, SNG 4, PLA 5
 
 fifth digit: CXN label, SIL 0, IDS 1, CXN 2, LAU 3, SNG 4, PLA 5
 
-For example, 12000 means infant is fussing, 51100 means infant is crying while mom is talking to infant with motherese. Note that if first digit is 0, then the rest of the digits will be zeros (00000). 00000 is the unique label for silence.
+For example, 12000 means infant is fussing, 51100 means infant is crying while mom is talking to infant with motherese. Note that if first digit is 0, then the rest of the digits will be zeros(00000). 00000 is the unique label for silence.
