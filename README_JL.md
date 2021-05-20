@@ -8,9 +8,9 @@ SER/ser_adapt_lena.py -- CNN model entry point
 
 SER/model_py/cnn_multi_filters_v2.py -- CNN model implementation
 
-SER/ser_adapt_lena_multitask.py -- CNN model entry point for multi-tiers training
+SER/ser_adapt_lena_multitask.py -- CNN model entry point for multitask training
 
-SER/model_py/cnn_multi_filters_multitask.py -- CNN model implementation for multi-tiers
+SER/model_py/cnn_multi_filters_multitask.py -- CNN model implementation for multitask
 
 LDA/LDA_classification.py -- LDA model entry point
 
@@ -52,6 +52,8 @@ train_embo_norm_fisher_1000.h5 means normalized top 1000 default features for Fi
 path to pretrained data for 2-layer FCN: /ws/ifp-05/hasegawa/jialuli3/idp_data/model_weights/NN
 
 path to pretrained data for CNN: /ws/ifp-05/hasegawa/jialuli3/idp_data/model_weights/CNN
+
+path to pretrained data for CNN multitask learning: /ws/ifp-05/hasegawa/jialuli3/idp_data/model_weights/CNN_multitask
 
 Pretrained model names generally has the format of data_type+feature_name+fold_number+special_condition. For example,
 
